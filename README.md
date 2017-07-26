@@ -4,6 +4,10 @@
   python manage.py celery worker --loglevel=info
   /usr/local/bin/python manage.py runserver 8.8.8.8:8888 --insecure
 ```
+```crb
+cobbler import --path=/mnt --name=centos-6.9 arch=x86_64
+cobbler profile edit --name="centos-6.9-x86_64"  --kickstart=/var/lib/cobbler/kickstarts/template_centos
+```
 
 ### 网卡绑定
 ```cobbler
