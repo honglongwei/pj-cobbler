@@ -1,0 +1,67 @@
+auth  --useshadow  --enablemd5
+unsupported_hardware
+bootloader --location=mbr 
+text
+firewall --disabled
+firstboot --disable
+keyboard us
+lang en_US
+url --url=$tree
+$yum_repo_stanza
+$SNIPPET('network_config')
+reboot
+
+rootpw --iscrypted $default_password_crypted
+selinux --disabled
+skipx
+timezone Asia/Shanghai
+install
+zerombr
+
+clearpart --all --initlabel
+#clearpart --drives=sda --all
+$SNIPPET('diy/system_config_partition')
+
+%pre
+$SNIPPET('kickstart_start')
+$SNIPPET('pre_anamon')
+$SNIPPET('pre_install_network_config')
+%end
+
+%packages --nobase
+@core
+@base
+wget
+#yum_repos
+%end
+
+%post
+$SNIPPET('diy/system_install_end')
+$SNIPPET('diy/system_config_start')
+$yum_config_stanza
+$SNIPPET('post_install_kernel_options')
+#
+$SNIPPET('func_register_if_enabled')
+$SNIPPET('puppet_register_if_enabled')
+$SNIPPET('download_config_files')
+$SNIPPET('koan_environment')
+#$SNIPPET('redhat_register')
+$SNIPPET('cobbler_register')
+$SNIPPET('post_anamon')
+#Start final steps
+
+
+
+#
+#$SNIPPET('kickstart_done')
+$SNIPPET('diy/system_config_network')
+$SNIPPET('diy/ssh')
+$SNIPPET('diy/system_config_repos')
+$SNIPPET('diy/software_install_start')
+$SNIPPET('zabbix_agent')
+$SNIPPET('diy/system_config_end')
+# software install
+$SNIPPET('diy/software_install_end')
+$SNIPPET('diy/done')
+$SNIPPET('kickstart_done')
+%end
